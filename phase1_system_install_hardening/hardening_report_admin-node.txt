@@ -1,0 +1,50 @@
+===== HARDENING REPORT FOR admin-node =====
+Generated: Wed Nov  5 11:00:41 EST 2025
+
+Hostname: admin-node.example.com
+Role: admin
+OS: Rocky Linux 8.10 (Blue Onyx)
+Kernel: 4.18.0-553.80.1.el8_10.x86_64
+
+[SSH CONFIG]
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PasswordAuthentication yes
+MaxAuthTries 4
+
+[SELINUX STATUS]
+Enforcing
+
+[FIREWALL STATUS]
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: ens160
+  sources: 
+  services: cockpit dhcpv6-client ssh
+  ports: 
+  protocols: 
+  forward: no
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+
+[PASSWORD POLICY]
+# credits are not disabled which is the default). (See pam_cracklib manual.)
+# minlen = 8
+# The maximum credit for having digits in the new password. If less than 0
+# dcredit = 0
+# The maximum credit for having uppercase characters in the new password.
+# ucredit = 0
+# The maximum credit for having lowercase characters in the new password.
+# lcredit = 0
+# The maximum credit for having other characters in the new password.
+# ocredit = 0
+minlen = 12
+dcredit = -1
+ucredit = -1
+lcredit = -1
+ocredit = -1
