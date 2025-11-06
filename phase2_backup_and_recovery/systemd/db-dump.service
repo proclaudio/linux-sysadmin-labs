@@ -1,0 +1,5 @@
+[Unit]
+Description=Nightly DB dump
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/db_dump.sh
