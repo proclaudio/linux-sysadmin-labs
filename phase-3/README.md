@@ -40,7 +40,7 @@ Create service file `/etc/systemd/system/node_exporter.service` and enable it.
 #### **Step 2 — Prometheus Setup (on log-node)**
 
 Install Prometheus:
-```bash
+
 PROM_VER=2.55.1
 cd /opt
 sudo useradd --no-create-home --shell /usr/sologin prometheus || true
