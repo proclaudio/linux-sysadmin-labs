@@ -268,16 +268,6 @@ rsync -aAXH backup@admin-node.example.com:/srv/backup/web-node/<timestamp>/etc/m
 
 ---
 
-## 🧭 GitHub Deployment
-
-```bash
-cd ~/linux-sysadmin-labs
-git add phase2_backup_and_recovery
-git commit -m "Phase 2 — Backup & Recovery (full implementation)"
-git push```
-
----
-
 ## 🏁 Phase 2 Results
 
 * Automated, incremental backups for web, db, and log nodes
