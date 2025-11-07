@@ -116,7 +116,4 @@ Usage:
 
 bash scripts/deploy_phase3.sh
 bash scripts/validate_phase3.sh
-```
-
----
 
