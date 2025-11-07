@@ -1,0 +1,27 @@
+global:
+  resolve_timeout: 5m
+  smtp_smarthost: '192.168.111.140:25'
+  smtp_from: 'alertmanager@log-node.example.com'
+  smtp_hello: 'log-node.example.com'
+  smtp_require_tls: false
+
+route:
+  receiver: 'sysadmin'
+  group_by: ['alertname', 'instance']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 2h
+
+receivers:
+  - name: 'sysadmin'
+    email_configs:
+      - to: 'sysadmin@admin-node.example.com'
+        send_resolved: true
+        headers:
+          subject: "[ALERT] {{ .GroupLabels.alertname }} on {{ .GroupLabels.instance }}"
+        html: |
+          <b>Alert:</b> {{ .GroupLabels.alertname }} <br>
+          <b>Instance:</b> {{ .GroupLabels.instance }} <br>
+          <b>Status:</b> {{ .Status }} <br>
+          <b>Summary:</b> {{ .CommonAnnotations.summary }} <br>
+          <b>Description:</b> {{ .CommonAnnotations.description }} <br>
