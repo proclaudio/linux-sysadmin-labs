@@ -1,0 +1,76 @@
+---
+# Common baseline hardening & quality-of-life
+- name: Ensure base packages
+  ansible.builtin.package:
+    name: [vim, git, curl, wget, net-tools, tree, htop, policycoreutils-python-utils, firewalld]
+    state: present
+
+- name: Ensure firewalld running
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: SSH hardening (root disabled, pubkey enabled)
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regex }}"
+    line: "{{ item.line }}"
+    create: no
+    backrefs: yes
+  loop:
+    - { regex: '^#?PermitRootLogin.*',          line: 'PermitRootLogin no' }
+    - { regex: '^#?PasswordAuthentication.*',   line: 'PasswordAuthentication yes' }
+    - { regex: '^#?PubkeyAuthentication.*',     line: 'PubkeyAuthentication yes' }
+    - { regex: '^#?MaxAuthTries.*',             line: 'MaxAuthTries 4' }
+  notify: Restart sshd
+
+- name: Ensure SELinux enforcing in config file
+  ansible.builtin.replace:
+    path: /etc/selinux/config
+    regexp: '^SELINUX=.*'
+    replace: 'SELINUX=enforcing'
+
+- name: Set SELinux enforcing at runtime if possible
+  ansible.builtin.command: setenforce 1
+  register: setenforce_result
+  failed_when: false
+  changed_when: setenforce_result.rc == 0
+
+- name: Password policy (minlen=12)
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    line: "{{ item }}"
+    create: yes
+  loop:
+    - "minlen = 12"
+    - "dcredit = -1"
+    - "ucredit = -1"
+    - "lcredit = -1"
+    - "ocredit = -1"
+
+- name: Open SSH in firewalld
+  ansible.posix.firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Disable unwanted services (example)
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  loop: [cups, avahi-daemon]
+
+- name: Ensure audit tools exist
+  ansible.builtin.package:
+    name: [aide, audit]
+    state: present
+
+- name: Baseline marker
+  ansible.builtin.file:
+    path: /etc/ansible_common_baseline
+    state: touch
+
+

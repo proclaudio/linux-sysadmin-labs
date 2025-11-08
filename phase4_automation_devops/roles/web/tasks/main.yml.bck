@@ -1,0 +1,27 @@
+---
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: Open http/https
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: true
+  loop: [http, https]
+
+- name: Deploy index.html
+  ansible.builtin.copy:
+    dest: /usr/share/nginx/html/index.html
+    content: |
+      <h1>web-node: Configuration via Ansible</h1>
+      <p>Date: {{ ansible_date_time.date }} {{ ansible_date_time.time }}</p>
+
+- name: Ensure nginx running
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+
