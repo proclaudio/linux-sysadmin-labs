@@ -1,0 +1,22 @@
+---
+- name: Install MariaDB server
+  ansible.builtin.package:
+    name: mariadb-server
+    state: present
+
+- name: Open 3306/tcp
+  ansible.posix.firewalld:
+    port: 3306/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Ensure mariadb running
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: true
+
+# (Optional) Secure installation steps would go here,
+# or use a template/my.cnf, users, and DB creation tasks.
+

@@ -1,0 +1,12 @@
+---
+- name: Apply common baseline to all nodes
+  hosts: all
+  roles: [common]
+
+- name: Configure web server
+  hosts: web
+  roles: [web]
+
+- name: Configure database server
+  hosts: db
+  roles: [db]

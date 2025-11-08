@@ -1,0 +1,27 @@
+stages: [lint, syntax, apply]
+
+lint:
+  image: python:3.11
+  stage: lint
+  script:
+    - pip install ansible ansible-lint yamllint
+    - yamllint -s phase4_automation_devops
+    - ansible-lint phase4_automation_devops
+
+syntax:
+  image: python:3.11
+  stage: syntax
+  script:
+    - pip install ansible
+    - ansible-playbook phase4_automation_devops/site.yml --syntax-check
+
+apply:
+  image: alpine:latest
+  stage: apply
+  when: manual
+  tags: [onprem-runner]    # your self-hosted Runner tag
+  script:
+    - apk add --no-cache openssh-client python3 py3-pip
+    - pip3 install ansible
+    - ansible-playbook phase4_automation_devops/site.yml
+
